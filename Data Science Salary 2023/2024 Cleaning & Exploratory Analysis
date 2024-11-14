@@ -1,0 +1,65 @@
+-- Dataset: Data Science Salaries Dataset
+-- Source : https://www.kaggle.com/datasets/yusufdelikkaya/datascience-salaries-2024
+-- Tools  : MySQL Workbench
+
+-- SELECT ENTIRE TABLE:
+
+select * from data_science_salaries.datasalaries_cleaning;  
+
+-- TOTAL COUNT OF ROWS
+
+select  count(*) from  data_science_salaries.datasalaries_cleaning;
+
+-- CREATED NEW TABLE FOR DATA CLEANING AND INSERTING DATA FROM PREVIOUS TABLE 
+
+insert into data_science_salaries.datasalaries_cleaning
+select *,
+row_number() over (
+partition by work_year, experience_level, employment_type, job_title, salary ) AS row_num
+from data_science_salaries.datascience_salaries24;
+
+-- IDENTIFYING DUPLICATES
+
+select * from data_science_salaries.datasalaries_cleaning
+where row_num >1;  
+
+-- REMOVING DUPLICATES
+
+Delete from data_science_salaries.datasalaries_cleaning
+where row_num >1;
+
+-- STANDARDIZING DATA
+
+select distinct(TRIM(job_title))
+from data_science_salaries.datasalaries_cleaning;
+
+Update data_science_salaries.datasalaries_cleaning
+set job_title = TRIM(job_title);
+
+select distinct(TRIM(salary))
+from data_science_salaries.datasalaries_cleaning;
+
+Update data_science_salaries.datasalaries_cleaning
+set salary = TRIM(salary);
+
+-- CHECKING NULL VALUES
+
+select * from data_science_salaries.datasalaries_cleaning
+where company_size IS NULL;
+
+-- MIN, MAX. AVG STDEV SALARY PER YEAR
+
+select Min(salary_in_usd), MAX(salary_in_usd), avg(salary_in_usd), stddev(salary_in_usd),  count(salary_in_usd) AS Total_Salary_rows
+from data_science_salaries.datasalaries_cleaning
+where work_year = "2024";
+
+-- DATA SCIENCE EXPERIENCE LEVEL SALARY 2023 VS 2024 
+
+select experience_level, 
+avg(case when work_year = 2023 THEN salary_in_usd END) AS AVG_SALARY_2023,
+avg(case when work_year = 2024 THEN salary_in_usd END) AS AVG_SALARY_2024
+FROM data_science_salaries.datasalaries_cleaning
+GROUP BY experience_level
+ORDER BY experience_level;
+
+---------------------- IN PROGRESS ----------------------------
