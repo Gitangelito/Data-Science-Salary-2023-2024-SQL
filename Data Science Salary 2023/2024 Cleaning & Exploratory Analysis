@@ -62,4 +62,33 @@ FROM data_science_salaries.datasalaries_cleaning
 GROUP BY experience_level
 ORDER BY experience_level;
 
+
+-- Job Title frequency 
+
+select job_title, COUNT(*) As Job_title_frequency, avg(salary_in_usd) as Avg_Salary
+FROM data_science_salaries.datasalaries_cleaning
+where company_location ='US'
+GROUP BY job_title
+ORDER BY Job_title_frequency desc;
+
+-- TOTAL COMPANIES COUNT
+
+select distinct company_location, count(*)
+FROM data_science_salaries.datasalaries_cleaning
+GROUP BY company_location
+order by company_location desc;
+
+-- BREAKDOWN TOTAL COMPANY SIZE BY YEARS PER COUNTRY
+
+select company_size,
+count(case when work_year = 2020 THEN company_size END) AS Count_2020,
+count(case when work_year = 2021 THEN company_size END) AS Count_2021,
+count(case when work_year = 2022 THEN company_size END) AS Count_2022,
+count(case when work_year = 2023 THEN company_size END) AS Count_2023,
+count(case when work_year = 2024 THEN company_size END) AS Count_2024
+FROM data_science_salaries.datasalaries_cleaning
+where company_location = 'US'
+GROUP BY company_size
+ORDER BY company_size desc;
+
 ---------------------- IN PROGRESS ----------------------------
