@@ -91,4 +91,14 @@ where company_location = 'US'
 GROUP BY company_size
 ORDER BY company_size desc;
 
+
+-- HIGHEST PAYING JOBS TITLES AVERAGE 
+
+select job_title, avg(salary_in_usd) as avg_salary
+FROM data_science_salaries.datasalaries_cleaning
+group by job_title
+order by avg_salary desc
+limit 10;
+
+
 ---------------------- IN PROGRESS ----------------------------
